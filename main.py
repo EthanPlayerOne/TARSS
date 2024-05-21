@@ -36,6 +36,9 @@ config = get_config()  # получаем переменную с конфиго
 idle = disnake.Status.idle
 activity = disnake.Activity(type=disnake.ActivityType.watching, name="за порядком")
 dnd = disnake.Status.dnd
+"""
+Две переменных ниже обязательно поменять на свои перед запуском! (см. условия использования в README)
+"""
 welcome_channel_id = 1168249842863194272  # этот канал будет игнорироваться в антирейде, и в него будут поступать сообщения о новых участниках
 muted_role_id = 1205580212977279067
 
@@ -75,13 +78,14 @@ async def on_member_join(member):
         embed.set_thumbnail(url='https://cdn.discordapp.com/icons/1143119676726059089/63c4bda8ff64c01fcbddec1ce1c05b43.webp?size=100')
         embed.add_field(name='<#1143121715665313902>', value='Рекомендуем прочитать правила.', inline=True)
         embed.add_field(name='<#1143119677229383692>', value='Енто наша главная чатилка!', inline=True)
-        embed.set_footer(text='Made by @ethanplayerone with love')  # эту строчку не менять
+        embed.set_footer(text='Made by @ethanplayerone with love')  # эту строчку не менять! (см. условия использования в README)
         await welcome.send(embed=embed)
 
         update_log(f"[INFO]  {member} joined.")
-        pass  # работает - не трогай. (С)
+        pass  # работает - не трогай. (С)           если есть идеи получше - делайте как считаете нужным
 
 """
+Настоятельно рекомендуется сделать свой ембед, чтобы не было как штампом отмечено с Тарсса.
 Чтобы не запариваться с эмбедом, рекомендую использовать этот классный генератор:
 https://cog-creators.github.io/discord-embed-sandbox/
 """
