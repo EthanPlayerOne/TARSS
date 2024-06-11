@@ -10,7 +10,7 @@ class BanCommand(commands.Cog):
 
     @commands.slash_command(name="banuser", description="Забанить участника.")
     @commands.has_permissions(ban_members=True)
-    async def banuser(self, inter: disnake.ApplicationCommandInteraction, member: disnake.Member, reason: str = "unspecified"):
+    async def ban(self, inter: disnake.ApplicationCommandInteraction, member: disnake.Member, reason: str = "unspecified"):
         if member.id==1091070338126852166:
             await inter.response.send_message(f'Меня нельзя забанить.')  # :^)
             log_text=f'[INFO]  BAN: {inter.author} tried to ban TARSS.'
@@ -20,9 +20,8 @@ class BanCommand(commands.Cog):
             log_text = f"[INFO]  BAN used successfully. {member} was banned by {inter.author}."
 
         update_log(log_text)
-        print(log_text)
 
-    @banuser.error
+    @ban.error
     async def ban_error(self, inter: disnake.ApplicationCommandInteraction, error):
         if isinstance(error, commands.MissingPermissions):
             await inter.response.send_message("**ОШИБКА:** недостаточно прав.", ephemeral=True)

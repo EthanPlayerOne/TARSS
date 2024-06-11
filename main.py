@@ -45,41 +45,11 @@ muted_role_id = 1205580212977279067
 
 
 """COGS"""
-bot.load_extension("cogs.banuser")
+bot.load_extension("cogs.ban")
 bot.load_extension("cogs.ping")
 bot.load_extension("cogs.clear")
-bot.load_extension("cogs.kickuser")
-
-
-@bot.slash_command(name="reload", description="Перезагрузить ког.")
-@commands.has_guild_permissions(administrator=True)
-async def reload(inter: disnake.ApplicationCommandInteraction, rcog:str):
-    if rcog == 'all':
-        for c in bot.cogs:
-            bot.unload_extension(c)
-            bot.load_extension(c)
-        log_text=f"[INFO]  RELOAD: All cogs was reloaded by {inter.author}"
-    
-    else:
-        cog=f"cogs.{cog}"
-        bot.get_cog(cog)
-        bot.unload_extension(cog)
-        bot.load_extension(cog)
-        await inter.response.send_message(f"Ког {cog} был успешно перезапущен.")
-        log_text=f"[INFO]  RELOAD: Cog {cog} was reloaded by {inter.author}."
-
-    update_log(log_text)
-
-@reload.error
-async def reload_error(inter:disnake.ApplicationCommandInteraction, error):
-    if isinstance(error, commands.errors.CommandInvokeError):
-        await inter.response.send_message(f"**ОШИБКА:** указанный ког не найден.")
-        log_text=f"[ERROR]  RELOAD: Cog not found."
-        
-    if isinstance(error, commands.MissingPermissions):
-        await inter.response.send_message(f"**ОШИБКА:** недостаточно прав для выполнения операции перезагрузки.")
-        log_text=f"[ERROR]  RELOAD: MissingPermissions Error. User: {inter.author}"
-    update_log(log_text=log_text)
+bot.load_extension("cogs.kick")
+bot.load_extension("cogs.reload")
 
 
 @bot.event

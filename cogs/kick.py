@@ -10,7 +10,7 @@ class KickCommand(commands.Cog):
 
     @commands.slash_command(name="kickuser", description="Выгнать участника.")
     @commands.has_permissions(kick_members=True)
-    async def kickuser(self, inter: disnake.ApplicationCommandInteraction, member: disnake.Member, reason: str = "unspecified"):
+    async def kick(self, inter: disnake.ApplicationCommandInteraction, member: disnake.Member, reason: str = "unspecified"):
         if member.id==1091070338126852166:
             await inter.response.send_message(f'Меня нельзя выгнать.')  # :^) 
             log_text=f'[INFO]  KICK: {inter.author} tried to kick TARSS.'
@@ -20,9 +20,8 @@ class KickCommand(commands.Cog):
             log_text = f"[INFO]  KICK used successfully. {member} was kicked by {inter.author}"
 
         update_log(log_text)
-        print(log_text)
 
-    @kickuser.error
+    @kick.error
     async def kick_error(self, inter: disnake.ApplicationCommandInteraction, error):
         if isinstance(error, commands.MissingPermissions):
             await inter.response.send_message("**ОШИБКА:** недостаточно прав.", ephemeral=True)

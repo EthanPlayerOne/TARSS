@@ -22,7 +22,6 @@ class ClearCommand(commands.Cog):
             log_text=f'[ERROR]  CLEAR: InvalidArgument Error. User: {inter.author}'
 
         update_log(log_text)
-        print(log_text)
 
     @clear.error
     async def clear_error(self, inter: disnake.ApplicationCommandInteraction, error): 
@@ -30,7 +29,6 @@ class ClearCommand(commands.Cog):
             await inter.response.send_message("**Ошибка.** Недостаточно прав для выполнения операции очистки.")
             log_text = f"[ERROR]  CLEAR: MissingPermissions Error. User: {inter.author}"
             update_log(log_text)
-            print(log_text)
     
 
 def setup(bot: commands.Bot):  
