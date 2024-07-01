@@ -1,6 +1,8 @@
 import disnake 
 from disnake.ext import commands
 from update_log import update_log
+from config import get_config
+config = get_config()
 
 class BanCommand(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -11,9 +13,9 @@ class BanCommand(commands.Cog):
     @commands.slash_command(name="banuser", description="Забанить участника.")
     @commands.has_permissions(ban_members=True)
     async def ban(self, inter: disnake.ApplicationCommandInteraction, member: disnake.Member, reason: str = "unspecified"):
-        if member.id==1091070338126852166:
+        if member.id==config["settings"]["id"]:
             await inter.response.send_message(f'Меня нельзя забанить.')  # :^)
-            log_text=f'[INFO]  BAN: {inter.author} tried to ban TARSS.'
+            log_text=f'[INFO]  BAN: {inter.author} tried to ban {config["settings"]["bot"]}.'
         else:
             await member.ban(reason=reason)
             await inter.response.send_message(f'{member.mention} был забанен.')

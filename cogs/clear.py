@@ -25,7 +25,7 @@ class ClearCommand(commands.Cog):
 
     @clear.error
     async def clear_error(self, inter: disnake.ApplicationCommandInteraction, error): 
-        if isinstance(error, commands.MissingPermissions): # если недостаточно прав (нет админки):
+        if isinstance(error, commands.MissingPermissions):
             await inter.response.send_message("**Ошибка.** Недостаточно прав для выполнения операции очистки.")
             log_text = f"[ERROR]  CLEAR: MissingPermissions Error. User: {inter.author}"
             update_log(log_text)

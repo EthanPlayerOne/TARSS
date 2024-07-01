@@ -4,27 +4,6 @@ import time
 from update_log import update_log
 
 from config import get_config  
-"""
-config нет в репозитории. сорян.
-В общем случае, суть в том, чтобы открыть .yaml файл с токеном, префиксом, 
-айди, и прочими конфигурационными параметрами. 
-Если вы, так же как и я, используете yaml для хранения этих данных,
-то сначала надо его импортировать:
-
-from yaml import load
-from yaml.loader import SafeLoader
-
-И как обычно открыть файл:
-
-def get_config():
-    with open('ПОЛНЫЙ/путь/к/вашему/файлу/config.yaml', 'r') as f:
-        return load(f, Loader=SafeLoader)
-
-Самого yaml файла тоже нет, его структуру рекомендую погуглить. Там все
-очень просто и очень прикольно.
-
-Пример использования ямла можете найти в update_log.py. 
-"""
 
 seconds = time.time() 
 currentTime11 = time.localtime(seconds)
@@ -37,11 +16,6 @@ config = get_config()  # получаем переменную с конфиго
 idle = disnake.Status.idle
 activity = disnake.Activity(type=disnake.ActivityType.watching, name="за порядком")
 dnd = disnake.Status.dnd
-"""
-Две переменных ниже обязательно поменять на свои перед запуском! (см. условия использования в README)
-"""
-welcome_channel_id = 1168249842863194272  # этот канал будет игнорироваться в антирейде, и в него будут поступать сообщения о новых участниках
-muted_role_id = 1205580212977279067
 
 
 """COGS"""
@@ -50,7 +24,7 @@ bot.load_extension("cogs.ping")
 bot.load_extension("cogs.clear")
 bot.load_extension("cogs.kick")
 bot.load_extension("cogs.reload")
-
+bot.load_extension("cogs.antiraid")
 
 @bot.event
 async def on_ready():
@@ -61,7 +35,7 @@ async def on_ready():
     log_text = f'[{time.asctime(currentTime)}] \nLogged in as {bot.user.name} sucsessfuly! \nID: {config["settings"]["id"]}. \nCurrent status: {config["settings"]["status"]}. \n\n'
     print(log_text) 
 
-    log = open(f'{config["settings"]["pass"]}/latest.log', 'w')  # тут мы переоткрываем latest лог, чтобы он был реально latest. в основном логфайле все как надо
+    log = open(f'{config["settings"]["path"]}/latest.log', 'w')  # тут мы переоткрываем latest лог, чтобы он был реально latest. в основном логфайле все как надо
     try:
         log.write(log_text)
     finally:
@@ -73,14 +47,14 @@ async def on_member_join(member):
     if member.bot:
         update_log(f"[WARNING]  Detected attempt to join bot to server: {member}") 
         print("Попытка добавить бота на сервер!")
-        await member.kick(reason="Подозрение на бота. Если возникла ошибка, обратитесь к `@ethanplayerone`.")
+        await member.kick(reason="Подозрение на бота. Если возникла ошибка, обратитесь к администрации.") 
     else:
-        welcome = disnake.utils.get(member.guild.channels, id=welcome_channel_id)
-        embed=disnake.Embed(title=f'{member.name}, добро пожаловать на сервер!', description='МП - уникальный проект, где ты обязательно найдешь себе место.', color=0x1a5fb4)
-        embed.set_author(name='МыжПрограммисты |МП | Open Beta', icon_url='https://cdn.discordapp.com/icons/1143119676726059089/63c4bda8ff64c01fcbddec1ce1c05b43.webp?size=100')
-        embed.set_thumbnail(url='https://cdn.discordapp.com/icons/1143119676726059089/63c4bda8ff64c01fcbddec1ce1c05b43.webp?size=100')
-        embed.add_field(name='<#1143121715665313902>', value='Рекомендуем прочитать правила.', inline=True)
-        embed.add_field(name='<#1143119677229383692>', value='Енто наша главная чатилка!', inline=True)
+        welcome = disnake.utils.get(member.guild.channels, id=config["settings"]["welcome_channel_id"])
+        embed=disnake.Embed(title=f'{member.name}, добро пожаловать на сервер!', description='Рады тебя видеть!', color=0x1a5fb4)
+        embed.set_author(name='Название сервера', icon_url='иконка сервера')
+        embed.set_thumbnail(url='еще иконка какая нибудь')
+        embed.add_field(name='что нибудь', value='Это наше "что-нибудь"!', inline=True)
+        embed.add_field(name='текст', value='а это очень крутой текст!', inline=True)
         embed.set_footer(text='Made by @ethanplayerone with love')  # эту строчку не менять! (см. условия использования в README)
         await welcome.send(embed=embed)
 
@@ -88,49 +62,10 @@ async def on_member_join(member):
         pass  # работает - не трогай. (С)           если есть идеи получше - делайте как считаете нужным
 
 """
-Настоятельно рекомендуется сделать свой ембед, чтобы не было как штампом отмечено с Тарсса.
+Настоятельно рекомендуется сделать свой ембед, чтобы да.
 Чтобы не запариваться с эмбедом, рекомендую использовать этот классный генератор:
 https://cog-creators.github.io/discord-embed-sandbox/
 """
 
-@bot.event
-async def on_message(message):
-    welcome = disnake.utils.get(message.guild.channels, id=welcome_channel_id)
-    if message.author.bot:  
-        return
-    channel = message.channel  # позуй)
-    if channel == welcome:
-        return
-
-    messages = await channel.history(limit=6).flatten()
-
-    if len(messages) == 6 and all(m.content == messages[0].content for m in messages):
-        role = disnake.utils.get(message.guild.roles, id=muted_role_id)
-        try:
-            await message.author.add_roles(role)
-        except AttributeError:
-            pass
-            
-        await channel.purge(limit=6)
-        await channel.send(f"**Сработала анти-рейд защита.** В случае ошибки обратитесь к модераторам.")
-        log_text = f"[WARNING]  RAID DETECTED! Possible raiders: {message.author}."
-        update_log(log_text)
-        print(log_text)
-    await bot.process_commands(message)
-
-"""
-Я ЗНАЮ НАСКОЛЬКО ЭТО НЕКРУТО,
-но если я пытаюсь придумать и реализовать что-то понадежнее и эффективнее
-ничего хорошего не получается, хотя я понимаю, что анти-рейд это должна быть
-одна из самых основных функций бота, нормальный рабочий метод был безвозвратно 
-утерян, и в связи с отсутствием времени на разработку нового я прошу вас
-меня простить, и, если у вас есть идеи по улучшению защиты от рейдов
-я буду очень рад если вы предложите мне в дискорд в лс (@ethanplayerone) или 
-откроете pull request которому я тоже буду безмерно рад и благодарен. 
-
-Такие дела. 
-Обнял, приподнял,
-Ита
-"""
 
 bot.run(config["settings"]["token"])

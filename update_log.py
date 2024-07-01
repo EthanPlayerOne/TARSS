@@ -6,13 +6,13 @@ def update_log(log_text):
     seconds = time.time() 
     currentTime11 = time.localtime(seconds)
 
-    latest = open(f'{config["settings"]["pass"]}/latest.log', 'a')  
+    latest = open(f'{config["settings"]["path"]}/latest.log', 'a')  
     try:
         latest.write(f"[{time.asctime(currentTime11)}]     " + log_text + f"\n")  # ага
     finally:
         latest.close()
 
-    main = open(f'{config["settings"]["pass"]}/main.log', 'a')
+    main = open(f'{config["settings"]["path"]}/main.log', 'a')
     try: 
         main.write(f"[{time.asctime(currentTime11)}]     " + log_text + f"\n")
     finally:

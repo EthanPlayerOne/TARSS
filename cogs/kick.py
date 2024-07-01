@@ -1,6 +1,8 @@
 import disnake 
 from disnake.ext import commands
 from update_log import update_log
+from config import get_config 
+config = get_config()
 
 class KickCommand(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -11,9 +13,9 @@ class KickCommand(commands.Cog):
     @commands.slash_command(name="kickuser", description="Выгнать участника.")
     @commands.has_permissions(kick_members=True)
     async def kick(self, inter: disnake.ApplicationCommandInteraction, member: disnake.Member, reason: str = "unspecified"):
-        if member.id==1091070338126852166:
+        if member.id==config["settings"]["id"]:
             await inter.response.send_message(f'Меня нельзя выгнать.')  # :^) 
-            log_text=f'[INFO]  KICK: {inter.author} tried to kick TARSS.'
+            log_text=f'[INFO]  KICK: {inter.author} tried to kick {config["settings"]["bot"]}.'
         else:
             await member.kick(reason=reason)
             await inter.response.send_message(f'{member.mention} был изгнан.')

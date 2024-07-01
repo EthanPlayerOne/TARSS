@@ -27,7 +27,7 @@ class Reload(commands.Cog):
     async def reload_error(self, inter:disnake.ApplicationCommandInteraction, error):
         if isinstance(error, commands.errors.CommandInvokeError):
             await inter.response.send_message(f"**ОШИБКА:** указанный ког не найден.")
-            log_text=f"[ERROR]  RELOAD: Cog not found."
+            log_text=f"[ERROR]  RELOAD: Cog not found. User: {inter.author}"
             
         if isinstance(error, commands.MissingPermissions):
             await inter.response.send_message(f"**ОШИБКА:** недостаточно прав для выполнения операции перезагрузки.")
