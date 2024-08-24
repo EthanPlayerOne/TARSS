@@ -3,9 +3,11 @@ from collections import deque
 import disnake
 from disnake.ext import commands
 from update_log import update_log
-from config import get_config  
+from config import get_config, get_ignore_antiraid_ids 
 
 config = get_config()
+ign_channels = get_ignore_antiraid_ids()
+
 
 class AntiRaid(commands.Cog):
     def __init__(self, bot):
@@ -45,7 +47,7 @@ class AntiRaid(commands.Cog):
                 update_log(log_text)
     
         channel = message.channel
-        if channel == welcome:
+        if channel in ign_channels:
             return
 
         messages = await channel.history(limit=6).flatten()
