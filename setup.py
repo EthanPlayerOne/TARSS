@@ -2,7 +2,7 @@ import os
 import subprocess
 import yaml
 
-class Colors:
+class Colors:  #       #якрутой - 2: юзаю классы даже там, где не надо и оформляю все функциями даже если это тоже не надо
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -34,9 +34,6 @@ def print_banner():
     print(f"{banner_color}  |____|\\____|__  /____|_  /_______  /_______  / ")
     print(f"{banner_color}                \\/       \\/        \\/        \\/ {Colors.ENDC}")
 
-def check_root():
-    # На Windows нет понятия "суперпользователь", поэтому пропускаем эту проверку
-    pass
 
 def get_current_pwd():
     return os.getcwd()
@@ -114,12 +111,14 @@ def get_ignore_antiraid_ids():
     print_success("Поздравляем, все прошло успешно!")
     print("Не забудте поставить роль бота выше всех остальных ролей.")
     print("Надеемся, что Вам понравится! :^)")
-    exit(0)
+    exit(0)  #    #якрутой - 3: юзаю коды завершения программы
 
 
 def update_config(action):
-    path = input("Введите ПОЛНЫЙ путь к конфигурационному файлу (config.yaml): ")
-    if not os.path.isfile(path):
+    path = input("Введите ПОЛНЫЙ путь к конфигурационному файлу (config.yaml) (по умолчанию - текущая дериктория): ")
+    if path == '':
+        path=f'{get_current_pwd()}/config.yaml'
+    elif not os.path.isfile(path):
         print_error(f"Не удалось найти файл. ({path})")
         exit(4)
 
@@ -161,7 +160,6 @@ def main():
     print("Добро пожаловать! Приступим?")
     print()
 
-    check_root()
     current_pwd = get_current_pwd()
     print(f"[INFO]  Текущая рабочая директория: {current_pwd}")
 

@@ -8,7 +8,7 @@ class Reload(commands.Cog):
 
     @commands.slash_command(name="reload_cog", description="Reloads a specified cog")
     async def reload(self, inter: disnake.AppCmdInter, cog_name: str):
-        if cog_name=='all':
+        if cog_name=='all':  # НЕ РАБОТАЕТ. TODO: исправить.
             for c in self.bot.cogs:
                 self.bot.unload_extension(c)
                 self.bot.load_extension(c)
@@ -23,7 +23,7 @@ class Reload(commands.Cog):
         
         update_log(log_text)
 
-    @reload.error
+    @reload.error #      #якрутой - 4: юзаю .error обработчики
     async def reload_error(self, inter:disnake.ApplicationCommandInteraction, error):
         if isinstance(error, commands.errors.CommandInvokeError):
             await inter.response.send_message(f"**ОШИБКА:** указанный ког не найден.")
