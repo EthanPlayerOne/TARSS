@@ -55,7 +55,7 @@ async def on_member_join(member):
         embed.set_thumbnail(url='еще иконка какая нибудь')
         embed.add_field(name='что нибудь', value='Это наше "что-нибудь"!', inline=True)
         embed.add_field(name='текст', value='а это очень крутой текст!', inline=True)
-        embed.set_footer(text='Made by @ethanplayerone with love')  # эту строчку не менять! (см. условия использования в README)
+        embed.set_footer(text='Made by @zephyr30 with love')  # эту строчку не менять! (см. условия использования в README)
         await welcome.send(embed=embed)
 
         update_log(f"[INFO]  {member} joined.")
@@ -67,5 +67,5 @@ async def on_member_join(member):
 https://cog-creators.github.io/discord-embed-sandbox/
 """
 
-
-bot.run(config["settings"]["token"])
+if __name__ == "__main__":
+    bot.run(config["settings"]["token"])  #      #якрутой - 1: юзаю входную точку

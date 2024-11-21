@@ -2,7 +2,7 @@ import os
 import subprocess
 import yaml
 
-class Colors:
+class Colors:  #       #якрутой - 2: юзаю классы даже там, где не надо и оформляю все функциями даже если это тоже не надо
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -25,7 +25,6 @@ def print_error(text):
 def print_warning(text):
     print_colored(text, Colors.WARNING)
 
-
 def print_banner():
     banner_color = Colors.FAIL
     print(f"{banner_color}________________  _________  _________ _________")
@@ -35,22 +34,18 @@ def print_banner():
     print(f"{banner_color}  |____|\\____|__  /____|_  /_______  /_______  / ")
     print(f"{banner_color}                \\/       \\/        \\/        \\/ {Colors.ENDC}")
 
-def check_root():
-    if os.geteuid() == 0:
-        print("Настоятельно не рекомендуется выполнять скрипт от имени суперпользователя.")
-        exit(3)
 
 def get_current_pwd():
     return os.getcwd()
 
 def print_menu():
-    print(f"\nЧто вы хотите сделать?")
+    print("Что вы хотите сделать?")
     print("1 - запустить полный сетап бота (первый запуск);")
     print("2 - поменять токен;")
     print("3 - поменять имя бота;")
     print("4 - изменить ID бота;")
     print("5 - изменить id мут-роли;")
-    print("6 - изменить id приветственного канала;")
+    print("6 - изменить id игнорируемых каналов;")
     print("7 - изменить путь к папке с логами.")
 
 def get_action():
@@ -68,7 +63,9 @@ def setup_bot():
     id = input("Скопируйте user ID вашего бота: ")
     path = input("Скопируйте ПОЛНЫЙ путь к папке, куда будут литься логи (по умолчанию - текущая с подпапкой /logs): ")
     muteid = input("Введите id мут-роли: ")
-    welcomeid = input("Введите id канала с сообщениями приветствия новых участников: ")
+    ignoreantiraidids = input("Введите id каналов, которые будет игнорировать антирейд (через пробел, без дополнительных символов): ")
+
+    ignoreantiraidids_list = ignoreantiraidids.split()
 
     print("Приступаю к установке...")
 
@@ -89,7 +86,7 @@ def setup_bot():
             "status": "online",
             "path": path,
             "muted_role_id": muteid,
-            "welcome_channel_id": welcomeid
+            "ignore_antiraid_ids": ignoreantiraidids_list 
         }
     }
     with open("config.yaml", "w") as config_file:
@@ -103,6 +100,10 @@ from yaml.loader import SafeLoader
 def get_config():
     with open('{os.getcwd()}/config.yaml', 'r') as f:
         return load(f, Loader=SafeLoader)
+
+def get_ignore_antiraid_ids():
+    config = get_config()
+    return config['settings']['ignore_antiraid_ids']
 """
     with open("config.py", "w") as config_py_file:
         config_py_file.write(config_py_content)
@@ -110,11 +111,14 @@ def get_config():
     print_success("Поздравляем, все прошло успешно!")
     print("Не забудте поставить роль бота выше всех остальных ролей.")
     print("Надеемся, что Вам понравится! :^)")
-    exit(0)
+    exit(0)  #    #якрутой - 3: юзаю коды завершения программы
+
 
 def update_config(action):
-    path = input("Введите ПОЛНЫЙ путь к конфигурационному файлу (config.yaml): ")
-    if not os.path.isfile(path):
+    path = input("Введите ПОЛНЫЙ путь к конфигурационному файлу (config.yaml) (по умолчанию - текущая дериктория): ")
+    if path == '':
+        path=f'{get_current_pwd()}/config.yaml'
+    elif not os.path.isfile(path):
         print_error(f"Не удалось найти файл. ({path})")
         exit(4)
 
@@ -136,8 +140,9 @@ def update_config(action):
         muteid = input("Введите новый id мут-роли: ")
         config_data["settings"]["muted_role_id"] = muteid
     elif action == 6:
-        welcomeid = input("Введите новый id канала с приветствиями: ")
-        config_data["settings"]["welcome_channel_id"] = welcomeid
+        ignoreantiraidids = input("Введите новые id каналов, которые будет игнорировать антирейд (через пробел, без дополнительных символов): ")
+        ignoreantiraidids_list = ignoreantiraidids.split()
+        config_data["settings"]["ignore_antiraid_ids"] = ignoreantiraidids_list
     elif action == 7:
         path2 = input("Введите новый путь к папке с логами: ")
         if not os.path.isdir(path2):
@@ -152,10 +157,9 @@ def update_config(action):
 
 def main():
     print_banner()
-    print(f"\nДобро пожаловать! Приступим?")
+    print("Добро пожаловать! Приступим?")
     print()
 
-    check_root()
     current_pwd = get_current_pwd()
     print(f"[INFO]  Текущая рабочая директория: {current_pwd}")
 
